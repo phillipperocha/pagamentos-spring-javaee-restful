@@ -1,20 +1,30 @@
 package dev.procha.pagamentoModeloConceitual.resources;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-// Como ela será um controlador Rest precisamos passar a diretiva através de um anotation
+import dev.procha.pagamentoModeloConceitual.domain.Categoria;
+
 @RestController
-// E aqui passaremos o endpoint rest que queremos pra esse controlador
 @RequestMapping(value="/categorias")
 public class CategoriaResource {
 	
-	// Agora vamos criar um método básico apenas pra teste
-	// Para essa função ser rest temos que associá-la a algum verbo http, no caso o GET
 	@RequestMapping(method=RequestMethod.GET)
-	public String listar() {
-		return "Rest está funcionando!";
+	// Mudaremos o nosso método para retornar agora uma lista de categorias
+	public List<Categoria> listar() {
+		
+		Categoria c1 = new Categoria(1, "Informática");
+		Categoria c2 = new Categoria(2, "Escritório");
+		
+		List<Categoria> lista = new ArrayList<>();
+		lista.add(c1);
+		lista.add(c2);
+		
+		return lista;
 	}
 
 }
