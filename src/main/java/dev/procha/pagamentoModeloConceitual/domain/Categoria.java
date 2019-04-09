@@ -7,17 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-// Para levar essa categoria ao banco precisamos dizer que ela é uma entidade a ser modelada
-// Por isso, utilizaremos a anotação @Entity
-
 @Entity
 public class Categoria  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	// Precisamos dizer quem será a chave primária com @Id
 	@Id
-	// E, no nosso caso, ele será gerado automaticamente então entramos com a anotação @GeneratedValue
-	// E também definir a estratégia de geração automática dos IDS
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
@@ -71,11 +65,6 @@ public class Categoria  implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
-	
-	
-	
 	
 		
 }
