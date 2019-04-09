@@ -2,20 +2,27 @@ package dev.procha.pagamentoModeloConceitual.domain;
 
 import java.io.Serializable;
 
-// Partindo do checklist vamos realizar as implementações necessárias
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-public class Categoria  implements Serializable { // 6. Implementar Serializable. Isso diz que a nossa classe pode ser convertida em uma sequencia de bytes.
+// Para levar essa categoria ao banco precisamos dizer que ela é uma entidade a ser modelada
+// Por isso, utilizaremos a anotação @Entity
+
+@Entity
+public class Categoria  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	// 1. Atributos Básicos
+	// Precisamos dizer quem será a chave primária com @Id
+	@Id
+	// E, no nosso caso, ele será gerado automaticamente então entramos com a anotação @GeneratedValue
+	// E também definir a estratégia de geração automática dos IDS
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
 	
-	// 2. A classe categoria está associada com produto, mas estamos iniciando o teste apenas com a categoria, ignororaremos esse passo agora
-	
-	// 3. Gerando os construtores
 	public Categoria() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Categoria(Integer id, String nome) {
@@ -24,7 +31,6 @@ public class Categoria  implements Serializable { // 6. Implementar Serializable
 		this.nome = nome;
 	}
 
-	// 4. Gerar Getters e Setters
 	public Integer getId() {
 		return id;
 	}
@@ -41,9 +47,6 @@ public class Categoria  implements Serializable { // 6. Implementar Serializable
 		this.nome = nome;
 	}
 
-	// 5. Gerar HashCode e Equals 
-	//(Precisamos desses métodos para não comparar apenas dois objetos pelo seu ponteiro de memória.)
-	// E sim pelo conteúdo dele. É padrão na web que comparamos apenas pelo ID
 	@Override
 	public int hashCode() {
 		final int prime = 31;
