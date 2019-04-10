@@ -12,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Produto implements Serializable {
@@ -29,10 +29,8 @@ public class Produto implements Serializable {
 		joinColumns = @JoinColumn(name = "produto_id"),
 		inverseJoinColumns = @JoinColumn(name = "categoria_id")
 	)	
-	// Aqui do lado da lista de categorias, temos que colocar outra anotação para não vir.
-	// Usaremos @JsonBackReference, ele sabe que do outro lado já foram buscado os objetos
-	// Então ele não buscará mais. Então ele vai omitir a listagem de objetos.
-	@JsonBackReference
+	// Trocando @JsonBackReference por @JsonIgnore
+	@JsonIgnore
 	private List<Categoria> categorias = new ArrayList<>();
 		
 	public Produto() {
