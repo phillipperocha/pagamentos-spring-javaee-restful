@@ -14,17 +14,12 @@ import dev.procha.pagamentoModeloConceitual.domain.Categoria;
 import dev.procha.pagamentoModeloConceitual.services.CategoriaService;
 
 @RestController
-// Temos que acrescentar que nesse endpoint ele ainda vai receber o ID da categoria
 @RequestMapping(value="/categorias")
 public class CategoriaResource {
 	
-	// Injetaremos a dependência do CategoriaService, que buscará pelo id
 	@Autowired
 	private CategoriaService service;
 	
-	// Para isso colocaremos aqui um value, pode ser {id} ou qualquer outro nome dentro de chaves.
-	// Ou seja, o endpoint desse método agora vai ser /categorias/(algumacoisa)
-	// Mudaremos o nome do método pra find e diremos que ele vai receber um Integer
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	// Para que o Spring saiba que esse Id de baixo vai ser o mesmo que veio na requisição
 	// Temos que incluir uma anotação chamada @PathVariable

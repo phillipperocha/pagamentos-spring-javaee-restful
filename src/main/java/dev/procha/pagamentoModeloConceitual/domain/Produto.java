@@ -12,26 +12,27 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
-// 1. Mapeando a Entidade
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Produto implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	// 2. Mapeando o ID
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
 	private Double preco;
 	
-	// 3. Agora mapearemos os relacionamentos da classe Produto, no caso ela se relaciona com as categorias no formato Muitos para Muitos
 	@ManyToMany
-	// Na anotação abaixo, @JoinTable, é que definiremos quem será a tabela que vai fazer o Muitos para Muitos no banco de dados
-	
-	@JoinTable(name = "PRODUTO_CATEGORIA", // Precisamos nomear a tabela do banco que será utilizada para o relacionamento
-		joinColumns = @JoinColumn(name = "produto_id"), // Definir o nome da chave estrangeira da classe produto nessa tabela, ela receberá a PK de produto
-		inverseJoinColumns = @JoinColumn(name = "categoria_id") // Aqui definiremos a chave estrangeira da categoria, junto de seu nome na tabela
+	@JoinTable(name = "PRODUTO_CATEGORIA",
+		joinColumns = @JoinColumn(name = "produto_id"),
+		inverseJoinColumns = @JoinColumn(name = "categoria_id")
 	)	
+	// Aqui do lado da lista de categorias, temos que colocar outra anotação para não vir.
+	// Usaremos @JsonBackReference, ele sabe que do outro lado já foram buscado os objetos
+	// Então ele não buscará mais. Então ele vai omitir a listagem de objetos.
+	@JsonBackReference
 	private List<Categoria> categorias = new ArrayList<>();
 		
 	public Produto() {
