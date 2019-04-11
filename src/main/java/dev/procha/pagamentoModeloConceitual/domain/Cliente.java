@@ -26,37 +26,19 @@ public class Cliente implements Serializable{
 	private String nome;
 	private String email;
 	private String cpfOuCnpj;
-	// O tipo cliente Internamente será armazenado como um inteiro
-	// Mas para o mundo externo a classe vai expor um dado TipoCliente 
+	
 	private Integer tipo;
-	// Os getters, setters e construtores do tipo serão tipoCliente,
-	// no construtor mudaremos um pouco, cheque lá.
 	
-	
-	// O cliente pode ter vários endereços
-	// E é mapeado na classe endereço como "cliente", é a sua FK lá
 	@OneToMany(mappedBy = "cliente")
 	private List<Endereco> enderecos = new ArrayList<>();
-	
-	// O telefone está modelado como uma entidade fraca (weak entity), ela nem tem id próprio
-	// E ela é totalmente dependente do cliente.
-	
-	// Nesse caso, como o telefone é simplesmente uma String que só tem o número, nem criaremos uma classe
-	// Dependendo da situação, podemos nem implementar uma classe quando ela for simples demais.
-	// Mesmo ela tendo sido desenhada no projeto.
-	
-	// Vamos implementá-la como uma coleção de Strings associadas ao cliente
-	// Usaremos um conjunto (set), pra garantir que não haverá repetição
-	
-	// Para mapear os telefones como entidade fraca também é diferente
-	// Vamos usar a anotação @ElementCollection
+
 	@ElementCollection
-	// Agora informaremos o nome da tabela auxiliar que terá no banco de dados para
-	// guardar os telefones
 	@CollectionTable(name = "TELEFONE")
 	private Set<String> telefones = new HashSet<>();
 	
-	// Pronto! Representamos os telefones como um conjunto de Strings.
+	// Adicionar os pedidos e os getters e setters
+	@OneToMany(mappedBy = "cliente")
+	private List<Pedido> pedidos = new ArrayList<>();
 	
 	public Cliente() {
 		
@@ -68,7 +50,6 @@ public class Cliente implements Serializable{
 		this.nome = nome;
 		this.email = email;
 		this.cpfOuCnpj = cpfOuCnpj;
-		// Faremos o getCodigo do tipo
 		this.tipo = tipo.getCod();
 	}
 
@@ -110,7 +91,6 @@ public class Cliente implements Serializable{
 	}
 
 	public void setTipo(TipoCliente tipo) {
-		// Só vamos armazenar o codigo
 		this.tipo = tipo.getCod();
 	}
 
@@ -128,6 +108,14 @@ public class Cliente implements Serializable{
 
 	public void setTelefones(Set<String> telefones) {
 		this.telefones = telefones;
+	}
+	
+	public List<Pedido> getPedidos() {
+		return pedidos;
+	}
+
+	public void setPedidos(List<Pedido> pedidos) {
+		this.pedidos = pedidos;
 	}
 
 	@Override
@@ -154,5 +142,4 @@ public class Cliente implements Serializable{
 			return false;
 		return true;
 	}
-
 }

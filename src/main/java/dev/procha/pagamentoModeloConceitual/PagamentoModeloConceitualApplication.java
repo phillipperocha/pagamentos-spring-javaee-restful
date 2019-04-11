@@ -1,5 +1,6 @@
 package dev.procha.pagamentoModeloConceitual;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +13,20 @@ import dev.procha.pagamentoModeloConceitual.domain.Cidade;
 import dev.procha.pagamentoModeloConceitual.domain.Cliente;
 import dev.procha.pagamentoModeloConceitual.domain.Endereco;
 import dev.procha.pagamentoModeloConceitual.domain.Estado;
+import dev.procha.pagamentoModeloConceitual.domain.Pagamento;
+import dev.procha.pagamentoModeloConceitual.domain.PagamentoComBoleto;
+import dev.procha.pagamentoModeloConceitual.domain.PagamentoComCartao;
+import dev.procha.pagamentoModeloConceitual.domain.Pedido;
 import dev.procha.pagamentoModeloConceitual.domain.Produto;
+import dev.procha.pagamentoModeloConceitual.domain.enums.EstadoPagamento;
 import dev.procha.pagamentoModeloConceitual.domain.enums.TipoCliente;
 import dev.procha.pagamentoModeloConceitual.repositories.CategoriaRepository;
 import dev.procha.pagamentoModeloConceitual.repositories.CidadeRepository;
 import dev.procha.pagamentoModeloConceitual.repositories.ClienteRepository;
 import dev.procha.pagamentoModeloConceitual.repositories.EnderecoRepository;
 import dev.procha.pagamentoModeloConceitual.repositories.EstadoRepository;
+import dev.procha.pagamentoModeloConceitual.repositories.PagamentoRepository;
+import dev.procha.pagamentoModeloConceitual.repositories.PedidoRepository;
 import dev.procha.pagamentoModeloConceitual.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -30,22 +38,21 @@ public class PagamentoModeloConceitualApplication implements CommandLineRunner{
 	
 	@Autowired
 	private ProdutoRepository produtoRepository;
-	
 	@Autowired
 	private CategoriaRepository categoriaRepository;
-	
 	@Autowired
 	private EstadoRepository estadoRepository;
-	
 	@Autowired
 	private CidadeRepository cidadeRepository;
-	
-	// Adicionamos as dependências
 	@Autowired
 	private EnderecoRepository enderecoRepository;
-	
 	@Autowired
 	private ClienteRepository clienteRepository;
+	@Autowired
+	private PedidoRepository pedidoRepository;
+	@Autowired
+	private PagamentoRepository pagamentoRepository;
+	
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -108,6 +115,24 @@ public class PagamentoModeloConceitualApplication implements CommandLineRunner{
 		// Agora salvando eles no banco
 		clienteRepository.saveAll(Arrays.asList(cli1));
 		enderecoRepository.saveAll(Arrays.asList(e1, e2));
+		
+		// Vamos criar um objeto auxiliar para data:
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		
+		// Instanciar os pedidos
+		Pedido ped1 = new Pedido(null, sdf.parse("30/09/2017 10:32"), cli1, e1);
+		Pedido ped2 = new Pedido(null, sdf.parse("10/10/2017 19:35"), cli1, e2);
+		
+		Pagamento pagto1 = new PagamentoComCartao(null, EstadoPagamento.QUITADO, ped1, 6);
+		ped1.setPagamento(pagto1);
+		
+		Pagamento pagto2 = new PagamentoComBoleto(null, EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+		ped2.setPagamento(pagto2);;
+		
+		cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+		
+		pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+		pagamentoRepository.saveAll(Arrays.asList(pagto1, pagto2));
 		
 	}
 }
