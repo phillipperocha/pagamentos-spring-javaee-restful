@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Estado implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -19,7 +21,7 @@ public class Estado implements Serializable {
 	private Integer id;
 	private String nome;
 	
-	// Aqui temos o OneToMany e temos que dizer por qual variável ele é mapeado do outro lado)
+	@JsonIgnore
 	@OneToMany(mappedBy="estado")
 	private List<Cidade> cidades = new ArrayList<>();
 	
