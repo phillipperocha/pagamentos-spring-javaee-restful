@@ -2,6 +2,8 @@ package dev.procha.pagamentoModeloConceitual.domain;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -10,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -21,7 +24,6 @@ public class Pedido implements Serializable {
 	private Integer id;
 	private Date instante;
 	
-	// Uma peculiaridade do JPA e garantimos que o ID do pagamento será o mesmo do pedido
 	@OneToOne(cascade=CascadeType.ALL, mappedBy = "pedido")
 	private Pagamento pagamento;
 	
@@ -33,11 +35,16 @@ public class Pedido implements Serializable {
 	@JoinColumn(name="endereco_de_entrega_id")
 	private Endereco enderecoDeEntrega;
 	
+	// Aqui declararemos os itens associados aquele pedido
+	// E faremos seus getters e setters
+	
+	@OneToMany(mappedBy = "id.pedido") // aqui temos que informar que quem mapeou do outro lado foi o id, no atributo pedido
+	private Set<ItemPedido> itens = new HashSet<>();
+
 	public Pedido() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	// Apagaremos o pagamento do construtor porque temos que criar a independência pra instanciar
 	public Pedido(Integer id, Date instante, Cliente cliente, Endereco enderecoDeEntrega) {
 		super();
 		this.id = id;
@@ -84,6 +91,15 @@ public class Pedido implements Serializable {
 
 	public void setEnderecoDeEntrega(Endereco enderecoDeEntrega) {
 		this.enderecoDeEntrega = enderecoDeEntrega;
+	}
+	
+	// Getters e setters de Itens
+	public Set<ItemPedido> getItens() {
+		return itens;
+	}
+
+	public void setItens(Set<ItemPedido> itens) {
+		this.itens = itens;
 	}
 
 	@Override
