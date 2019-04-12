@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import dev.procha.pagamentoModeloConceitual.domain.enums.EstadoPagamento;
 
 @Entity
@@ -33,8 +35,8 @@ public abstract class Pagamento  implements Serializable {
 	
 	@OneToOne
 	@JoinColumn(name="pedido_id")
-	// Para garantir que o Id da classe Pagamento seja o mesmo de Pedido vamos por:
 	@MapsId
+	@JsonIgnore
 	private Pedido pedido;
 	
 	public Pagamento() {

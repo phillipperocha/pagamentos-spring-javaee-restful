@@ -36,7 +36,8 @@ public class Produto implements Serializable {
 	@JsonIgnore
 	private List<Categoria> categorias = new ArrayList<>();
 	
-	@OneToMany (mappedBy = "id.produto") // foi mapeado pelo seu id, no atributo produto do id
+	@JsonIgnore
+	@OneToMany (mappedBy = "id.produto")
 	private Set<ItemPedido> itens = new HashSet<>();
 		
 	public Produto() {
@@ -49,8 +50,7 @@ public class Produto implements Serializable {
 		this.preco = preco;
 	}
 
-	// Nossos produtos podem ver os pedidos nos quais eles foram associados (como diz o diagrama)
-	// Então implementaremos como o diagrama
+	@JsonIgnore
 	public List<Pedido> getPedidos() {
 		List<Pedido> lista = new ArrayList<>();
 		for(ItemPedido ip : itens) {

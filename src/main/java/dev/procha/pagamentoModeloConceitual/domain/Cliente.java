@@ -14,6 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import dev.procha.pagamentoModeloConceitual.domain.enums.TipoCliente;
 
 @Entity
@@ -36,8 +38,8 @@ public class Cliente implements Serializable{
 	@CollectionTable(name = "TELEFONE")
 	private Set<String> telefones = new HashSet<>();
 	
-	// Adicionar os pedidos e os getters e setters
 	@OneToMany(mappedBy = "cliente")
+	@JsonIgnore
 	private List<Pedido> pedidos = new ArrayList<>();
 	
 	public Cliente() {

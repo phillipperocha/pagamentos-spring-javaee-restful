@@ -4,23 +4,22 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import dev.procha.pagamentoModeloConceitual.domain.enums.EstadoPagamento;
 
-// Nas subclasses é só colocar @Entity
 @Entity
 public class PagamentoComBoleto extends Pagamento {
-	// Na subclasse não precisa por o implements mas precisa por o numero de versão
 	private static final long serialVersionUID = 1L;
 	
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dataVencimento;
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	private Date dataPagamento;
 	
 	public PagamentoComBoleto() {
-		// TODO Auto-generated constructor stub
 	}
 
-	// Como o Pagamento com boleto é uma SUBCLASSE vamos gerar um construtor a partir da superclasse
-	// e acrescentaremos os novos atributos
 	public PagamentoComBoleto(Integer id, EstadoPagamento estado, Pedido pedido, Date dataVencimento, Date dataPagamento ) {
 		super(id, estado, pedido);
 		this.dataVencimento = dataVencimento;
