@@ -15,18 +15,22 @@ public class CategoriaService {
 	@Autowired
 	private CategoriaRepository repo;
 	
-	// Faremos um tratamento de exceções em nossas requisições.
-	
 	public Categoria buscar(Integer id) {
-		// Aqui buscamos os objetos em Categoria
-		// Como o método findById funciona? Bem, se o ID existe, ele retorna o objeto.
-		// Se não existe ele retorna nulo.		
 	    Optional<Categoria> obj = repo.findById(id);
 	    
-	    // E aqui utilizaremos um recurso do java 8, se o objeto não existir ele lança uma exceção
-	    // Utilizamos um lambda para instanciar a exceção que criaremos agora:
 	    return obj.orElseThrow(() -> new ObjectNotFoundException(
 	    	"Objeto não encontrado! Id: " + id + ", Tipo: " + Categoria.class.getName()));
+	}
+	
+	public Categoria insert(Categoria obj) {
+		// Apenas por desencargo de consciência criaremos uma operação aqui só pra garantir que inserímos um objeto novo
+		obj.setId(null);
+
+		// Esse ID na inserção tem que ser nulo, porque se não for o método .save vai encarar como se fosse uma atualização
+		// e não uma inserção.
+		
+		// E depois retornamos o objeto		
+		return repo.save(obj);
 	}
 	
 }
