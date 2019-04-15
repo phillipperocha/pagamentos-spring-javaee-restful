@@ -22,48 +22,35 @@ public class CategoriaResource {
 	private CategoriaService service;
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ResponseEntity<?> find(@PathVariable Integer id) {
+	public ResponseEntity<Categoria> find(@PathVariable Integer id) {
 		
-		Categoria obj = service.buscar(id);
+		// Como mudamos o Find no Serive atualizaremos aqui
+		Categoria obj = service.find(id);
 		
 		return ResponseEntity.ok().body(obj);
 	}
 	
 	
 	@RequestMapping(method = RequestMethod.POST)
-	// É void porque vai ser uma resposta Http que não vai ter corpo.
-	
-	// Vamos fazer o método insert recebendo uma Categoria
-	
-	//** A ANOTAÇÃO @RequestBody faz com que o Json seja convertido n objeto java do tipo Categoria automaticamente!
 	public ResponseEntity<Void> insert(@RequestBody Categoria obj) {
-		
-		// Esse método vai ter que chamar um serviço que insere essa nova categoria no banco
-		
-		// Porque o obj vai receber o insert? Porque a operação insert do JPA ela retorna o objeto
-		// E quando retornar ele vai ter um Id real, coisa que não tinha quando inserimos.
 		obj = service.insert(obj);
-		
-		// ***** OBS *****
-		// Aqui vai entrar uma boa prática! O protocolo HTtp quando estamos inserindo um recurso
-		// tem um código de resposta particular para isso. ** google -> http status code
-		
-		// Quando uma requisição está inserindo, temos um código em particular que é o 201
-		// E também nos diz que além de retornar o código, temos que retornar a URI do novo recurso
-		
-		// Então vamos aprender a fazer isso :D
-		
-		// Como o nosso obj, agora após o retorno possui o ID faremos assim (uma forma bem particular do java):
-		
+	
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(obj.getId()).toUri();
-		// O método fromCurrentRequest, ele pega a URI que usamos para inserir, ou seja, localhost:8080/categorias
-		// e acrescentamos o /id do obeto que criamos. Atribuimos o valor ao {id} utilizando o BuildAndExpand
-		// E por fim convertemos ele pra URI
-		
-		// O método created do ResponseEntity já retorna o código correto de inserção 201
-		
 		return  ResponseEntity.created(uri).build();
+	}
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
+	// A requisição tanto vai receber um objeto pelo corpo dela quanto o id pelos parâmetros da uri
+	public ResponseEntity<Void> update(@RequestBody Categoria obj, @PathVariable Integer id) {
+		// Setaremos o ID do objeto que recebemos pelo ID que desejamos atualizar
+		obj.setId(id);
+		
+		// Chamaremos o nosso objeto e o atualizaremos
+		obj = service.update(obj);
+		
+		return ResponseEntity.noContent().build();		
+		
 	}
 
 }

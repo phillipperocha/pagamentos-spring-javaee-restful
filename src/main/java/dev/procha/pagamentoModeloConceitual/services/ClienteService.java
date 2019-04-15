@@ -18,7 +18,7 @@ public class ClienteService {
 	private ClienteRepository repo;
 	
 	// E precisamos implementar a busca por Id
-	public Cliente buscar(Integer id) {
+	public Cliente find(Integer id) {
 		Optional<Cliente> obj = repo.findById(id);
 		
 		return obj.orElseThrow(() -> new ObjectNotFoundException(

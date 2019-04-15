@@ -15,7 +15,8 @@ public class CategoriaService {
 	@Autowired
 	private CategoriaRepository repo;
 	
-	public Categoria buscar(Integer id) {
+	// Vamos também atualizar o nome do método para o padrão que estamos usando em inglês
+	public Categoria find(Integer id) {
 	    Optional<Categoria> obj = repo.findById(id);
 	    
 	    return obj.orElseThrow(() -> new ObjectNotFoundException(
@@ -23,13 +24,23 @@ public class CategoriaService {
 	}
 	
 	public Categoria insert(Categoria obj) {
-		// Apenas por desencargo de consciência criaremos uma operação aqui só pra garantir que inserímos um objeto novo
 		obj.setId(null);
 
-		// Esse ID na inserção tem que ser nulo, porque se não for o método .save vai encarar como se fosse uma atualização
-		// e não uma inserção.
+		return repo.save(obj);
+	}
+	
+	// Implementaremos agora o nosso método de atualização
+	public Categoria update(Categoria obj) {
 		
-		// E depois retornamos o objeto		
+		// O método save do repository do SpringData serve tanto pra inserir como pra criar um novo.
+		// Ele muda quando tem um ID ou não passado como argumento.
+	
+		// Antes de retornar o método verificaremos se o ID existe
+		
+		find(obj.getId()); // O find vai buscar o objeto e se não existir ele vai estourar uma exceção
+		
+		
+		// Agora retornaremos o que devemos
 		return repo.save(obj);
 	}
 	
