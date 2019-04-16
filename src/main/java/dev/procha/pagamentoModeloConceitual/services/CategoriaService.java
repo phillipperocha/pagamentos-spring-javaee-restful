@@ -3,11 +3,13 @@ package dev.procha.pagamentoModeloConceitual.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import dev.procha.pagamentoModeloConceitual.domain.Categoria;
 import dev.procha.pagamentoModeloConceitual.exceptions.ObjectNotFoundException;
 import dev.procha.pagamentoModeloConceitual.repositories.CategoriaRepository;
+import dev.procha.pagamentoModeloConceitual.resources.exception.DataIntegrityException;
 
 @Service
 public class CategoriaService {
@@ -42,6 +44,17 @@ public class CategoriaService {
 		
 		// Agora retornaremos o que devemos
 		return repo.save(obj);
+	}
+
+	public void delete(Integer id) {
+		find(id);
+		// Não chamaremos o delete seco desse jeito, trataremos essa exceção
+		try {
+			repo.deleteById(id);	
+		} catch (DataIntegrityViolationException e) {
+			// Lançaremos uma exceção nossa, da nossa camada de serviço.
+			throw new DataIntegrityException("Não é possível excluir uma categoria que possui produtos.");			
+		}
 	}
 	
 }

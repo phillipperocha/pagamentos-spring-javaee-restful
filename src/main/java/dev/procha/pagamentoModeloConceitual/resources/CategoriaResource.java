@@ -41,16 +41,22 @@ public class CategoriaResource {
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
-	// A requisição tanto vai receber um objeto pelo corpo dela quanto o id pelos parâmetros da uri
 	public ResponseEntity<Void> update(@RequestBody Categoria obj, @PathVariable Integer id) {
-		// Setaremos o ID do objeto que recebemos pelo ID que desejamos atualizar
 		obj.setId(id);
 		
-		// Chamaremos o nosso objeto e o atualizaremos
 		obj = service.update(obj);
 		
 		return ResponseEntity.noContent().build();		
 		
 	}
+	
+	// Método de deleção
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable Integer id) {
+		
+		service.delete(id);
+		return ResponseEntity.noContent().build();
+	}
+	
 
 }

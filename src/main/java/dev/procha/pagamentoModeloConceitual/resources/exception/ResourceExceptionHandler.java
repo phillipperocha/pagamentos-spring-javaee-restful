@@ -28,4 +28,15 @@ public class ResourceExceptionHandler {
 	// Estamos implementando uma ação básica do framework que obrigatoriamente tem que ter
 	// a assinatura do método acima.
 	
+	@ExceptionHandler(DataIntegrityException.class)
+	public ResponseEntity<StandardError> dataIntegrity(DataIntegrityException e, 
+			HttpServletRequest request) {
+		// Aqui geraremos o código Http Bad_Request, sempre se mantendo nas boas práticas
+		// temos que enviar o código que condiza com o erro.
+		StandardError err = new StandardError(HttpStatus.BAD_REQUEST.value(),
+				e.getMessage(), System.currentTimeMillis());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
+	}
+	
 }
