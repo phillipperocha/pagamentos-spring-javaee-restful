@@ -1,5 +1,6 @@
 package dev.procha.pagamentoModeloConceitual.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ public class CategoriaService {
 	@Autowired
 	private CategoriaRepository repo;
 	
-	// Vamos também atualizar o nome do método para o padrão que estamos usando em inglês
 	public Categoria find(Integer id) {
 	    Optional<Categoria> obj = repo.findById(id);
 	    
@@ -31,30 +31,25 @@ public class CategoriaService {
 		return repo.save(obj);
 	}
 	
-	// Implementaremos agora o nosso método de atualização
 	public Categoria update(Categoria obj) {
+		find(obj.getId());
 		
-		// O método save do repository do SpringData serve tanto pra inserir como pra criar um novo.
-		// Ele muda quando tem um ID ou não passado como argumento.
-	
-		// Antes de retornar o método verificaremos se o ID existe
-		
-		find(obj.getId()); // O find vai buscar o objeto e se não existir ele vai estourar uma exceção
-		
-		
-		// Agora retornaremos o que devemos
 		return repo.save(obj);
 	}
 
 	public void delete(Integer id) {
 		find(id);
-		// Não chamaremos o delete seco desse jeito, trataremos essa exceção
+		
 		try {
 			repo.deleteById(id);	
 		} catch (DataIntegrityViolationException e) {
-			// Lançaremos uma exceção nossa, da nossa camada de serviço.
+		
 			throw new DataIntegrityException("Não é possível excluir uma categoria que possui produtos.");			
 		}
+	}
+
+	public List<Categoria> findAll() {
+		return repo.findAll();
 	}
 	
 }
