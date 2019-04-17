@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -26,8 +28,6 @@ public class CategoriaResource {
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public ResponseEntity<Categoria> find(@PathVariable Integer id) {
-		
-		// Como mudamos o Find no Serive atualizaremos aqui
 		Categoria obj = service.find(id);
 		
 		return ResponseEntity.ok().body(obj);
@@ -61,24 +61,44 @@ public class CategoriaResource {
 	}
 	
 	@RequestMapping(method=RequestMethod.GET)
-	// Mudar a List<Categoria> para List<CategoriaDTO>
 	public ResponseEntity<List<CategoriaDTO>> findAll() {
 		
-		// Como fizemos o construtor do CategoriaDTO a partir de uma Categoria
-		// Percorreremos a List<Categoria>, e para cada elemento na lista, instanciaremos um DTO correspondente
 		List<Categoria> list = service.findAll();
 		
-		// Isso é um recurso do java 8 chamado stream.
-		// Para cada elemento obj da lista ele vai executar o arrowfunction
-		
-		// Ele instanciará uma CategoriaDTO, feito isso temos que voltar o objeto pra lista
-		// para isso usamos o .collect(Collectors.toList());
-		
-		// Com isso em apenas uma linha conseguimos converter uma lista para outra lista de tipos diferentes
 		List<CategoriaDTO> listDto = list.stream().map(obj -> new CategoriaDTO(obj)).collect(Collectors.toList());
 		
-		// Agora retornaremos a nova lista como response
 		return ResponseEntity.ok().body(listDto);
+	}
+	
+	// Agora utilizaremos um value para que ele precise ir em categorias/page para acessar esse endpoint
+	@RequestMapping(value="page", method=RequestMethod.GET)
+	
+	// O método não vai retornar uma Page<Categoria> e acrescentar no método findPage os parâmetros que temos que passar
+	
+	// Além disso teremos que por algumas anotações nesses parâmetros para que eles sejam pegos na requisição
+	public ResponseEntity<Page<CategoriaDTO>> findPage(
+			// Esses parâmetros vamos deixar como opcionais, não os deixaremos como PathVariables.
+			// Vamos fazê-los como parâmetros do GET e não como variáveis
+			// O caminho ficará: /categorias/page?page=0&linesPerPage=20....
+			
+			// Para que eles sejam parâmetros opcionais utilizaremos @RequestParm passando nome e valor padrão.
+			// Nesse caso da gente, se não informarmos o valor da página automaticamente irá para a página 0.
+			@RequestParam(value="page", defaultValue = "0") Integer page, 
+			// Sugestão do linesPerPage é por o 24, porque é múltiplo de 1,2, 3, 4 e fica fácil para organizar na tela
+			@RequestParam(value="linesPerPage", defaultValue = "24")Integer linesPerPage, 
+			@RequestParam(value="orderBy", defaultValue = "nome")String orderBy, 
+			@RequestParam(value="direction", defaultValue = "ASC")String direction) {
+		
+			Page<Categoria> list = service.findPage(page, linesPerPage, orderBy, direction);
+			
+			// Agora temos que converter uma Page de Categoria em uma Page de DTO
+			// Como o Page já é Java8 compliance, não precisamos nem do .stream que usamos antes
+			// Nem do .collect() que também usamos antes.
+			
+			Page<CategoriaDTO> listDto = list.map(obj -> new CategoriaDTO(obj));
+			
+			return ResponseEntity.ok().body(listDto);
+		
 	}
 	
 
