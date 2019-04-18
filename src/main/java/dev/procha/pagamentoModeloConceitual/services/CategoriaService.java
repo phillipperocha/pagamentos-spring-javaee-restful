@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import dev.procha.pagamentoModeloConceitual.domain.Categoria;
+import dev.procha.pagamentoModeloConceitual.dto.CategoriaDTO;
 import dev.procha.pagamentoModeloConceitual.exceptions.ObjectNotFoundException;
 import dev.procha.pagamentoModeloConceitual.repositories.CategoriaRepository;
 import dev.procha.pagamentoModeloConceitual.resources.exception.DataIntegrityException;
@@ -55,25 +56,14 @@ public class CategoriaService {
 		return repo.findAll();
 	}
 	
-	// Faremos uma função só para retornar a quantidade de categorias que quisermos
-	// Ela retornará uma página de categorias
-	// Para isso utilizaremos uma classe do Spring Data chamada Page.
-	// Esse Page vai encapsular informações e operações sobre a paginação
-	// Teremos que informar nele qual a página quer buscar (a contagem de páginas começa de zero)
-	// Em seguida diremos quantas linhas por página e por qual atributo deverá ser ordenado e outro em qual direção
-	// Descendente ou Ascendente.
-	
 	public Page<Categoria> findPage(Integer page, Integer linesPerPage, String orderBy, String direction) {
-		
-		// Para fazermos uma consulta e retornar uma página de dados temos que criar outro objeto do tipo PageRequest
-		// Esse PageRequest é um objeto que vai preparar as minhas informações para que faça a consulta que nos retorne
-		// a página de dados.
-		// O direction precisa receber um objeto Direciton, para isso utilizamos esse método estático dele.
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-		
-		// Agora é só retornar o findAll passando o PageRequest como argumento que automaticamente o findAll
-		// Vai considerar o PageRequest como argumento e vai retornar a página
 		return repo.findAll(pageRequest);
+	}
+	
+	// Um método para construir uma Categoria a partir de um DTO
+	public Categoria fromDTO(CategoriaDTO objDto) {
+		return new Categoria(objDto.getId(), objDto.getNome());
 	}
 	
 }

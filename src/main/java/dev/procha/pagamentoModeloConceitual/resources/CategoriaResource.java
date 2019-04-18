@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +35,15 @@ public class CategoriaResource {
 		return ResponseEntity.ok().body(obj);
 	}
 	
-	
+	// Aqui no método do POST
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Void> insert(@RequestBody Categoria obj) {
+	
+	// Não inseriremos mais uma categoria no @RequestBody, será uma CategoriaDTO
+	// E precisamos também por o @Valid para fazer as validações
+	public ResponseEntity<Void> insert(@Valid @RequestBody CategoriaDTO objDto) {
+		
+		// Agora teremos que converter um objDto para um objeto da nossa entidade Categoria
+		Categoria obj = service.fromDTO(objDto);
 		obj = service.insert(obj);
 	
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
@@ -44,7 +52,11 @@ public class CategoriaResource {
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
-	public ResponseEntity<Void> update(@RequestBody Categoria obj, @PathVariable Integer id) {
+	// Mesmas mudanças para o Dto
+	public ResponseEntity<Void> update(@Valid @RequestBody CategoriaDTO objDto, @PathVariable Integer id) {
+		
+		// Convertendo para objeto
+		Categoria obj = service.fromDTO(objDto);
 		obj.setId(id);
 		
 		obj = service.update(obj);
@@ -70,30 +82,14 @@ public class CategoriaResource {
 		return ResponseEntity.ok().body(listDto);
 	}
 	
-	// Agora utilizaremos um value para que ele precise ir em categorias/page para acessar esse endpoint
 	@RequestMapping(value="page", method=RequestMethod.GET)
-	
-	// O método não vai retornar uma Page<Categoria> e acrescentar no método findPage os parâmetros que temos que passar
-	
-	// Além disso teremos que por algumas anotações nesses parâmetros para que eles sejam pegos na requisição
 	public ResponseEntity<Page<CategoriaDTO>> findPage(
-			// Esses parâmetros vamos deixar como opcionais, não os deixaremos como PathVariables.
-			// Vamos fazê-los como parâmetros do GET e não como variáveis
-			// O caminho ficará: /categorias/page?page=0&linesPerPage=20....
-			
-			// Para que eles sejam parâmetros opcionais utilizaremos @RequestParm passando nome e valor padrão.
-			// Nesse caso da gente, se não informarmos o valor da página automaticamente irá para a página 0.
 			@RequestParam(value="page", defaultValue = "0") Integer page, 
-			// Sugestão do linesPerPage é por o 24, porque é múltiplo de 1,2, 3, 4 e fica fácil para organizar na tela
 			@RequestParam(value="linesPerPage", defaultValue = "24")Integer linesPerPage, 
 			@RequestParam(value="orderBy", defaultValue = "nome")String orderBy, 
 			@RequestParam(value="direction", defaultValue = "ASC")String direction) {
 		
 			Page<Categoria> list = service.findPage(page, linesPerPage, orderBy, direction);
-			
-			// Agora temos que converter uma Page de Categoria em uma Page de DTO
-			// Como o Page já é Java8 compliance, não precisamos nem do .stream que usamos antes
-			// Nem do .collect() que também usamos antes.
 			
 			Page<CategoriaDTO> listDto = list.map(obj -> new CategoriaDTO(obj));
 			
