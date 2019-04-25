@@ -11,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import dev.procha.pagamentoModeloConceitual.domain.Categoria;
+import dev.procha.pagamentoModeloConceitual.domain.Cliente;
 import dev.procha.pagamentoModeloConceitual.dto.CategoriaDTO;
 import dev.procha.pagamentoModeloConceitual.exceptions.ObjectNotFoundException;
 import dev.procha.pagamentoModeloConceitual.repositories.CategoriaRepository;
@@ -36,9 +37,11 @@ public class CategoriaService {
 	}
 	
 	public Categoria update(Categoria obj) {
-		find(obj.getId());
+		Categoria newObj = find(obj.getId());
 		
-		return repo.save(obj);
+		updateData(newObj, obj);
+		
+		return repo.save(newObj);
 	}
 
 	public void delete(Integer id) {
@@ -61,9 +64,12 @@ public class CategoriaService {
 		return repo.findAll(pageRequest);
 	}
 	
-	// Um método para construir uma Categoria a partir de um DTO
 	public Categoria fromDTO(CategoriaDTO objDto) {
 		return new Categoria(objDto.getId(), objDto.getNome());
+	}
+	
+	private void updateData(Categoria newObj, Categoria obj) {
+		newObj.setNome(obj.getNome());
 	}
 	
 }

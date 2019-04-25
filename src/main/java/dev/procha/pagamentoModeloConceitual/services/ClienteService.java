@@ -30,14 +30,10 @@ public class ClienteService {
 	}
 	
 	public Cliente update(Cliente obj) {
-		// Vamos criar o objeto Cliente com o que achamos no banco
 		Cliente newObj = find(obj.getId());
 		
-		// E criaremos um método auxiliar para atualizar os dados do novo objeto que criamos com base no objeto que 
-		// veio como argumento.
 		updateData(newObj, obj);
 		
-		// Depois salvaremos o novo objeto com os dados já atualizados
 		return repo.save(newObj);
 	}
 
@@ -48,7 +44,7 @@ public class ClienteService {
 			repo.deleteById(id);	
 		} catch (DataIntegrityViolationException e) {
 		
-			throw new DataIntegrityException("Não é possível excluir uma categoria que possui produtos.");			
+			throw new DataIntegrityException("Não é possível excluir um Cliente porque há entidades relacionadas.");			
 		}
 	}
 

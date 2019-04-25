@@ -15,22 +15,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.procha.pagamentoModeloConceitual.domain.enums.EstadoPagamento;
 
 @Entity
-// Para mapear herança vamos colocar na superclasse e passamos a estratégia para fazer a herança na tabela do banco	// As estratégias são "o tabelão" que é uma tabela única que vai guardar valores nulos no cartao, caso seja boleto e vice-versa
-// E a segunda são três tabelas, uma pra cada um. 
-// A primeira estratégia é mais performática, mas a segunda mais organizada. A segunda temos que fazer joins para pegar os valores.
-// Quando tem poucos atributos na subclasse fazemos o tabelão
-// SINGLE_TABLE == tabelão // JOINED - tRês tabelas
-
 @Inheritance(strategy = InheritanceType.JOINED)
-// Será uma classe abstrata pq não pode ser instanciada
 public abstract class Pagamento  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	// Por ser um relacionamento um para um, usaremos o mesmo Id para o pagamento e o Pedido
-
 	private Integer id;
-	// Mesma coisa pro enum de antes
 	private Integer estado;
 	
 	@OneToOne
@@ -40,13 +30,12 @@ public abstract class Pagamento  implements Serializable {
 	private Pedido pedido;
 	
 	public Pagamento() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Pagamento(Integer id, EstadoPagamento estado, Pedido pedido) {
 		super();
 		this.id = id;
-		this.estado = estado.getCod();
+		this.estado = (estado == null) ? null : estado.getCod();
 		this.pedido = pedido;
 	}
 
