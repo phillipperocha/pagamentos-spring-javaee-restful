@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -31,7 +32,11 @@ public class Cliente implements Serializable{
 	
 	private Integer tipo;
 	
-	@OneToMany(mappedBy = "cliente")
+	// Aqui onde declaramos o relacionamento com Endereco colocamos o que acontece com ele caso deletemos o Cliente
+	// Com o cascade diremos como deve se comportar o endereço.
+	// Utilizaremos o ALL, ou seja, toda operação que modificar o Cliente vamos refletir em cascata nos Endereços
+	// Se apagarmos o cliente, apagamos os Endereços automaticamente
+	@OneToMany(mappedBy = "cliente", cascade=CascadeType.ALL)
 	private List<Endereco> enderecos = new ArrayList<>();
 
 	@ElementCollection
